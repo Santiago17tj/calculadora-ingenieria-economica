@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calculadora de Ingeniería Económica</title>
+<meta name="description" content="Calculadora financiera del proyecto de aula de Ingeniería Económica (UIS): interés compuesto, conversión de tasas, tasas indexadas y anualidades vencidas, anticipadas y perpetuas.">
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+<div class="franja"></div>
+<div class="hoja">
+  <header class="cabecera">
+    <div>
+      <h1>Calculadora financiera</h1>
+      <p class="institucion">Proyecto de aula de Ingeniería Económica, Universidad Industrial de Santander</p>
+    </div>
+    <label class="base-dias" for="base-dias">Año para tasas diarias
+      <select id="base-dias"><option value="360" selected>360 días</option><option value="365">365 días</option></select>
+    </label>
+  </header>
+
+  <nav class="modulos" id="modulos" role="tablist" aria-label="Operaciones de la calculadora">
+    <button type="button" role="tab" id="tab-compuesto" data-mod="compuesto" aria-controls="mod-compuesto" aria-selected="true">Interés compuesto</button>
+    <button type="button" role="tab" id="tab-conversion" data-mod="conversion" aria-controls="mod-conversion" aria-selected="false" tabindex="-1">Conversión de tasas</button>
+    <button type="button" role="tab" id="tab-indexadas" data-mod="indexadas" aria-controls="mod-indexadas" aria-selected="false" tabindex="-1">Tasas indexadas</button>
+    <button type="button" role="tab" id="tab-vencida" data-mod="vencida" aria-controls="mod-vencida" aria-selected="false" tabindex="-1">Anualidad vencida</button>
+    <button type="button" role="tab" id="tab-anticipada" data-mod="anticipada" aria-controls="mod-anticipada" aria-selected="false" tabindex="-1">Anualidad anticipada</button>
+    <button type="button" role="tab" id="tab-perpetua" data-mod="perpetua" aria-controls="mod-perpetua" aria-selected="false" tabindex="-1">Anualidad perpetua</button>
+  </nav>
+
+  <main>
+    <section id="mod-compuesto" role="tabpanel" aria-labelledby="tab-compuesto">
+      <div class="titulo-modulo"><h2>Interés compuesto</h2><span class="formula"><i>VF</i> = <i>VP</i> (1 + <i>i</i>)<sup><i>n</i></sup></span></div>
+      <p class="descripcion">Lleva un valor de hoy a una fecha futura, o al revés, con una tasa y un tiempo. Antes de aplicar la fórmula, la tasa se convierte a la misma unidad del tiempo.</p>
+      <figure class="diagrama" id="d-compuesto" aria-label="Línea de tiempo del flujo de caja"></figure>
+      <div class="trabajo"><form class="datos" id="f-compuesto" novalidate></form><div class="resultado" id="r-compuesto" aria-live="polite"></div></div>
+    </section>
+
+    <section id="mod-conversion" role="tabpanel" aria-labelledby="tab-conversion" hidden>
+      <div class="titulo-modulo"><h2>Conversión de tasas</h2><span class="formula"><i>i</i><sub>v</sub> = <i>i</i><sub>a</sub> / (1 − <i>i</i><sub>a</sub>) &nbsp;&nbsp; <i>EA</i> = (1 + <i>i</i>)<sup><i>k</i></sup> − 1</span></div>
+      <p class="descripcion">Pasa una tasa entre efectiva anual, nominal y periódica, vencida o anticipada, muestra cada paso de la conversión y arma la tabla de tasas equivalentes.</p>
+      <figure class="diagrama" id="d-conversion" aria-label="Pasos de la conversión de la tasa"></figure>
+      <div class="trabajo"><form class="datos" id="f-conversion" novalidate></form><div class="resultado" id="r-conversion" aria-live="polite"></div></div>
+    </section>
+
+    <section id="mod-indexadas" role="tabpanel" aria-labelledby="tab-indexadas" hidden>
+      <div class="titulo-modulo"><h2>Tasas indexadas</h2><span class="formula">indicador + puntos &nbsp; o &nbsp; (1 + indicador)(1 + <i>m</i>) − 1</span></div>
+      <p class="descripcion">Arma la tasa de un crédito o de una inversión atada a la DTF, el IBR, el IPC o la UVR con la regla del curso para cada indicador, y la lleva a la periodicidad que se necesite.</p>
+      <figure class="diagrama" id="d-indexadas" aria-label="Pasos de la tasa indexada"></figure>
+      <div class="trabajo"><form class="datos" id="f-indexadas" novalidate></form><div class="resultado" id="r-indexadas" aria-live="polite"></div></div>
+    </section>
+
+    <section id="mod-vencida" role="tabpanel" aria-labelledby="tab-vencida" hidden>
+      <div class="titulo-modulo"><h2>Anualidad vencida</h2><span class="formula"><i>VP</i> = <i>A</i> [1 − (1 + <i>i</i>)<sup>−<i>n</i></sup>] / <i>i</i> &nbsp;&nbsp; <i>VF</i> = <i>A</i> [(1 + <i>i</i>)<sup><i>n</i></sup> − 1] / <i>i</i></span></div>
+      <p class="descripcion">Pagos iguales al final de cada periodo. Calcula el valor presente, el valor futuro, la cuota, el número de pagos o la tasa.</p>
+      <figure class="diagrama" id="d-vencida" aria-label="Línea de tiempo del flujo de caja"></figure>
+      <div class="trabajo"><form class="datos" id="f-vencida" novalidate></form><div class="resultado" id="r-vencida" aria-live="polite"></div></div>
+    </section>
+
+    <section id="mod-anticipada" role="tabpanel" aria-labelledby="tab-anticipada" hidden>
+      <div class="titulo-modulo"><h2>Anualidad anticipada</h2><span class="formula"><i>VP</i> = <i>A</i> [1 − (1 + <i>i</i>)<sup>−<i>n</i></sup>] / <i>i</i> × (1 + <i>i</i>)</span></div>
+      <p class="descripcion">Pagos iguales al inicio de cada periodo, el primero se hace hoy. Son las fórmulas de la anualidad vencida multiplicadas por (1 + i).</p>
+      <figure class="diagrama" id="d-anticipada" aria-label="Línea de tiempo del flujo de caja"></figure>
+      <div class="trabajo"><form class="datos" id="f-anticipada" novalidate></form><div class="resultado" id="r-anticipada" aria-live="polite"></div></div>
+    </section>
+
+    <section id="mod-perpetua" role="tabpanel" aria-labelledby="tab-perpetua" hidden>
+      <div class="titulo-modulo"><h2>Anualidad perpetua</h2><span class="formula"><i>VP</i> = <i>A</i> / <i>i</i> &nbsp;&nbsp; <i>VP</i> = <i>A</i> (1 + <i>i</i>) / <i>i</i></span></div>
+      <p class="descripcion">Pagos iguales que no terminan. La primera fórmula es para la perpetuidad vencida y la segunda para la anticipada, en la que el primer pago se hace hoy.</p>
+      <figure class="diagrama" id="d-perpetua" aria-label="Línea de tiempo del flujo de caja"></figure>
+      <div class="trabajo"><form class="datos" id="f-perpetua" novalidate></form><div class="resultado" id="r-perpetua" aria-live="polite"></div></div>
+    </section>
+  </main>
+
+  <details class="notacion">
+    <summary>Notación y reglas que usa la calculadora</summary>
+    <div class="cols">
+      <dl>
+        <dt>VP</dt><dd>Valor presente, en pesos, ubicado en el periodo 0.</dd>
+        <dt>VF</dt><dd>Valor futuro, en pesos, ubicado al final del periodo n.</dd>
+        <dt>A</dt><dd>Cuota o pago periódico igual.</dd>
+        <dt>n</dt><dd>Número de periodos o de pagos, en la unidad elegida.</dd>
+        <dt>i</dt><dd>Tasa efectiva por periodo. Si no se dice otra cosa, es vencida.</dd>
+      </dl>
+      <dl>
+        <dt>j, k</dt><dd>j es la tasa nominal anual y k el número de periodos del año: diaria 360 o 365, mensual 12, bimestral 6, trimestral 4, cuatrimestral 3 y semestral 2. La tasa periódica es i = j / k.</dd>
+        <dt>EA</dt><dd>Tasa efectiva anual, EA = (1 + i)<sup>k</sup> − 1, y al revés i = (1 + EA)<sup>1/k</sup> − 1.</dd>
+        <dt>Vencida y anticipada</dt><dd>i<sub>v</sub> = i<sub>a</sub> / (1 − i<sub>a</sub>) e i<sub>a</sub> = i<sub>v</sub> / (1 + i<sub>v</sub>), siempre con tasas del mismo periodo.</dd>
+      </dl>
+      <dl>
+        <dt>Tasas indexadas</dt><dd>DTF e IBR más puntos se suman. IPC y UVR con margen se componen, (1 + i<sub>1</sub>)(1 + i<sub>2</sub>) − 1.</dd>
+        <dt>Siglas</dt><dd>NMV es nominal mes vencido, NTA nominal trimestre anticipado y NSV nominal semestre vencido; MV es mensual vencida, TA trimestral anticipada y SV semestral vencida.</dd>
+        <dt>Números</dt><dd>Se aceptan con coma o punto decimal y con puntos de miles, por ejemplo 15.000.000 o 15000000. Debajo de cada campo aparece cómo se leyó el valor.</dd>
+      </dl>
+    </div>
+  </details>
+  <p class="pie">Los cálculos usan todos los decimales; los pesos se muestran con dos decimales y las tasas con cuatro en porcentaje.</p>
+</div>
+<script src="js/motor.js"></script>
+<script src="js/interfaz.js"></script>
+</body>
+</html>
