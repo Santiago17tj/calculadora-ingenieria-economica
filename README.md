@@ -4,7 +4,7 @@ Proyecto de aula del curso de Ingeniería Económica de la Universidad Industria
 
 ## Cómo usarla
 
-Se puede abrir desde el enlace publicado en Vercel, en cualquier navegador del computador o del celular, o abriendo `index.html` directamente, ya que no necesita instalar nada ni conexión a internet. Al entrar aparece cada módulo con su ejercicio de validación cargado como ejemplo, y con Limpiar se borran los datos para escribir unos nuevos.
+La calculadora está publicada en **https://calculadora-ingenieria-economica.vercel.app** y se abre en cualquier navegador del computador o del celular. También se puede abrir `index.html` directamente, ya que no necesita instalar nada ni conexión a internet. Al entrar aparece cada módulo con su ejercicio de validación cargado como ejemplo, y con Limpiar se borran los datos para escribir unos nuevos.
 
 ## Estructura
 
@@ -13,6 +13,7 @@ Se puede abrir desde el enlace publicado en Vercel, en cualquier navegador del c
 - `js/motor.js` es el motor de cálculo, donde están las conversiones de tasas, las reglas de indexación y las fórmulas de cada módulo.
 - `js/interfaz.js` lee los datos de los formularios, revisa que sean consistentes, dibuja la línea de tiempo y muestra los resultados.
 - `pruebas/validaciones.js` corre los cinco ejercicios de validación del documento y compara el resultado con el valor esperado.
+- `icono.svg`, `apple-touch-icon.png` y `vista-previa.png` son el ícono de la página y la imagen que aparece cuando se comparte el enlace.
 
 Para correr la prueba se usa Node.js:
 
@@ -26,4 +27,4 @@ La tasa nominal se divide entre los periodos del año para obtener la periódica
 
 ## Publicación
 
-Es un sitio estático, sin paso de compilación. En Vercel basta con importar el repositorio y dejar la configuración por defecto.
+Es un sitio estático, sin paso de compilación. El repositorio está conectado con Vercel con la configuración por defecto, de modo que cada cambio que se sube a la rama `main` se publica solo.
