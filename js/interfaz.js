@@ -529,9 +529,26 @@
     return h;
   }
 
+  // un campo con texto que no se puede leer como número se informa como tal, no como si estuviera vacío
+  function primerNoNumerico(m) {
+    for (const inp of $$(`#f-${m} input[data-tipo]`)) {
+      const raw = inp.value.trim();
+      if (!raw || inp.offsetParent === null) continue;
+      if (!isNaN(F.leerNumero(raw, inp.dataset.tipo))) continue;
+      const caja = inp.closest('.campo');
+      const rotulo = caja && caja.querySelector('legend, .etiqueta');
+      const nombre = rotulo ? rotulo.childNodes[0].textContent.trim() : 'uno de los campos';
+      return { message: `El dato escrito en «${nombre}» (${raw}) no es un número válido. Use solo cifras, con coma o punto decimal, por ejemplo 1.500.000,75.`,
+        campo: (inp.dataset.tasaDe || inp.id).slice(m.length + 1) };
+    }
+    return null;
+  }
+
   let cargandoInicial = true;
   function calcular(m) {
     limpiarErrores(m);
+    const noNumerico = primerNoNumerico(m);
+    if (noNumerico) { mostrarError(m, noNumerico); return null; }
     let res;
     try {
       const inc = radio(`${m}-inc`);
