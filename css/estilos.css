@@ -185,5 +185,6 @@ select:focus-visible { outline: 2px solid var(--verde); outline-offset: 1px; }
 .notacion dt { font-family: var(--serif); font-weight: 600; font-style: italic; font-size: 17px; }
 .notacion dd { margin: 0 0 10px; color: var(--lapiz); font-size: 15px; }
 .pie { margin: 22px 0 0; font-size: 14px; color: var(--lapiz); }
+.pie.autores { margin-top: 6px; }
 
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }

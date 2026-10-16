@@ -2,6 +2,10 @@
 
 Proyecto de aula del curso de Ingeniería Económica de la Universidad Industrial de Santander. La calculadora resuelve interés compuesto, conversión de tasas, tasas indexadas (DTF, IBR, IPC y UVR) y anualidades vencidas, anticipadas y perpetuas, y para cada resultado muestra la tasa que se usó, la línea de tiempo del flujo de caja y el procedimiento con las fórmulas del curso.
 
+## Autores
+
+Miguel Ángel David Espejo, Luis Santiago Tarazona Jiménez y Sara Sofía Vargas Sanabria, para el curso de Ingeniería Económica del profesor José Luis Garcés-Bautista.
+
 ## Cómo usarla
 
 La calculadora está publicada en **https://calculadora-ingenieria-economica.vercel.app** y se abre en cualquier navegador del computador o del celular. También se puede abrir `index.html` directamente, ya que no necesita instalar nada ni conexión a internet. Al entrar aparece cada módulo con su ejercicio de validación cargado como ejemplo, y con Limpiar se borran los datos para escribir unos nuevos.
