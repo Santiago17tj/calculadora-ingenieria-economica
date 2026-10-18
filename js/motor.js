@@ -6,6 +6,8 @@
   // ---------------------------------------------------------------- periodicidades
   const PER = {
     diaria:        { k: 360, nombre: 'diaria',        sust: 'día',          unidades: 'días',          letra: 'D' },
+    semanal:       { k: 52,  nombre: 'semanal',       sust: 'semana',       unidades: 'semanas',       letra: '', fem: true },
+    quincenal:     { k: 24,  nombre: 'quincenal',     sust: 'quincena',     unidades: 'quincenas',     letra: 'Q', fem: true },
     mensual:       { k: 12,  nombre: 'mensual',       sust: 'mes',          unidades: 'meses',         letra: 'M' },
     bimestral:     { k: 6,   nombre: 'bimestral',     sust: 'bimestre',     unidades: 'bimestres',     letra: 'B' },
     trimestral:    { k: 4,   nombre: 'trimestral',    sust: 'trimestre',    unidades: 'trimestres',    letra: 'T' },
@@ -13,7 +15,7 @@
     semestral:     { k: 2,   nombre: 'semestral',     sust: 'semestre',     unidades: 'semestres',     letra: 'S' },
     anual:         { k: 1,   nombre: 'anual',         sust: 'año',          unidades: 'años',          letra: 'A' },
   };
-  const ORDEN = ['diaria', 'mensual', 'bimestral', 'trimestral', 'cuatrimestral', 'semestral', 'anual'];
+  const ORDEN = ['diaria', 'semanal', 'quincenal', 'mensual', 'bimestral', 'trimestral', 'cuatrimestral', 'semestral', 'anual'];
   let baseDias = 360;
 
   function setBaseDias(b) {
@@ -96,18 +98,23 @@
     return a.tipo === b.tipo && a.per === b.per && a.mod === b.mod;
   }
   const modTxt = (m) => (m === 'A' ? 'anticipada' : 'vencida');
+  // Siglas solo para EA y nominales (NMV, NTA, NSV...). En clase las nominales también se escriben MV, TA o SV,
+  // por eso las tasas periódicas no llevan sigla y se nombran con su periodo: 1,5 % mensual vencida.
   function sigla(t) {
     t = T(t.v, t.tipo, t.per, t.mod);
     if (t.tipo === 'EA') return 'EA';
-    const L = PER[t.per].letra;
-    return (t.tipo === 'nominal' ? 'N' : '') + L + t.mod;
+    const P = PER[t.per];
+    if (t.tipo === 'nominal' && P.letra) return 'N' + P.letra + t.mod;
+    if (t.tipo === 'nominal') return `nominal ${P.sust} ${modNominal(P, t.mod)}`;
+    return `${P.nombre} ${modTxt(t.mod)}`;
   }
+  const modNominal = (P, m) => (m === 'A' ? (P.fem ? 'anticipada' : 'anticipado') : (P.fem ? 'vencida' : 'vencido'));
   function nombreTasa(t) {
     t = T(t.v, t.tipo, t.per, t.mod);
     if (t.tipo === 'EA') return 'efectiva anual (EA)';
     const P = PER[t.per];
-    if (t.tipo === 'nominal') return `nominal ${P.sust} ${t.mod === 'A' ? 'anticipado' : 'vencido'} (${sigla(t)})`;
-    return `${P.nombre} ${modTxt(t.mod)} (${sigla(t)})`;
+    if (t.tipo === 'nominal') return `nominal ${P.sust} ${modNominal(P, t.mod)}${P.letra ? ` (${sigla(t)})` : ''}`;
+    return `${P.nombre} ${modTxt(t.mod)}`;
   }
   const describirTasa = (t) => `${pct(t.v)} ${nombreTasa(t)}`;
 
@@ -265,7 +272,7 @@
       if (kk !== 1) out.pasos.push(paso('Tasa efectiva anual', `EA = (1 + i)<sup>${kk}</sup> − 1 = (${dec(1 + i)})<sup>${kk}</sup> − 1`, `${pct(ea)} EA`));
       Object.assign(out, { simbolo: 'i', nombre: `Tasa de interés ${U.nombre}`, valor: i, texto: `${pct(i)} ${U.nombre} vencida`, decimal: dec(i, 10) });
       out.extras.push(['Tasa efectiva anual', `${pct(ea)} EA`]);
-      if (kk !== 1) out.extras.push(['Tasa nominal equivalente', `${pct(i * kk)} N${U.letra}V`]);
+      if (kk !== 1) out.extras.push(['Tasa nominal equivalente', describirTasa(T(i * kk, 'nominal', d.unidad, 'V'))]);
       out.tasaResultado = T(ea, 'EA');
       out.linea = { tipo: 'compuesto', n: d.n, incognita: 'i', unidad: d.unidad };
     } else if (inc === 'n') {
@@ -275,7 +282,11 @@
       finito(n, 'VF');
       out.pasos.push(paso('Tiempo', `n = ln(VF / VP) / ln(1 + i) = ln(${num(ratio, 10)}) / ln(${dec(1 + i)})`, `${num(n, 4)} ${U.unidades}`));
       Object.assign(out, { simbolo: 'n', nombre: 'Tiempo', valor: n, texto: `${num(n, 4)} ${U.unidades}` });
-      if (d.unidad !== 'anual') out.extras.push(['Equivale a', `${num(n / k(d.unidad), 4)} años`]);
+      const enAnios = n / k(d.unidad);
+      const meses = Math.round(enAnios * 12 * 100) / 100;
+      const anios = Math.floor(meses / 12);
+      const aniosMeses = `${anios} ${anios === 1 ? 'año' : 'años'} y ${num(meses - anios * 12, 2)} meses`;
+      out.extras.push(['Equivale a', d.unidad === 'anual' ? aniosMeses : `${num(enAnios, 4)} años, es decir ${aniosMeses}`]);
       out.linea = { tipo: 'compuesto', n, incognita: 'n', unidad: d.unidad };
     } else {
       throw new FinError('Seleccione la variable que quiere calcular.');
@@ -427,7 +438,8 @@
       finito(VF, 'A');
       out.pasos.push(pasoFF(s));
       out.pasos.push(paso(`Valor futuro de la anualidad ${nombreMod}`, `VF = A × factor${fTxt} = ${money(d.A)} × ${num(s, 10)}${fTxtNum}`, money(VF)));
-      Object.assign(out, { simbolo: 'VF', nombre: 'Valor futuro', valor: VF, texto: money(VF) });
+      Object.assign(out, { simbolo: 'VF', nombre: ant ? 'Valor futuro al final del periodo n, un periodo después del último pago' : 'Valor futuro', valor: VF, texto: money(VF) });
+      if (ant) out.extras.push(['Acumulado justo después del último pago (periodo n − 1)', money(VF / (1 + i))]);
       out.extras.push(['Suma de los pagos (n × A)', money(d.n * d.A)]);
       out.extras.push(['Intereses ganados (VF − n × A)', money(VF - d.n * d.A)]);
     } else if (inc === 'A') {
@@ -512,7 +524,7 @@
       out.pasos.push(paso('Comprobación', `${money(d.A)} × ${num(fac, 10)}${ant ? ` × ${dec(1 + i)}` : ''}`, money(d.A * fac * (ant ? 1 + i : 1))));
       Object.assign(out, { simbolo: 'i', nombre: `Tasa ${P.nombre} vencida`, valor: i, texto: `${pct(i)} ${P.nombre} vencida`, decimal: dec(i, 10) });
       out.extras.push(['Tasa efectiva anual', `${pct(ea)} EA`]);
-      if (kk !== 1) out.extras.push(['Tasa nominal equivalente', `${pct(i * kk)} N${P.letra}V`]);
+      if (kk !== 1) out.extras.push(['Tasa nominal equivalente', describirTasa(T(i * kk, 'nominal', d.per, 'V'))]);
       out.tasaResultado = T(ea, 'EA');
     } else {
       throw new FinError('Seleccione la variable que quiere calcular.');

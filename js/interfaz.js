@@ -10,8 +10,12 @@
   const radio = (name) => { const r = document.querySelector(`input[name="${name}"]:checked`); return r ? r.value : null; };
   const setRadio = (name, v) => { const r = document.querySelector(`input[name="${name}"][value="${v}"]`); if (r) r.checked = true; };
 
-  const TODOS = ['diaria', 'mensual', 'bimestral', 'trimestral', 'cuatrimestral', 'semestral', 'anual'];
-  const PAGOS = ['mensual', 'bimestral', 'trimestral', 'cuatrimestral', 'semestral', 'anual'];
+  const TODOS = ['diaria', 'semanal', 'quincenal', 'mensual', 'bimestral', 'trimestral', 'cuatrimestral', 'semestral', 'anual'];
+  const PAGOS = ['semanal', 'quincenal', 'mensual', 'bimestral', 'trimestral', 'cuatrimestral', 'semestral', 'anual'];
+  // artículos según el periodo: el mes, la semana, la quincena
+  const del = (P) => (P.fem ? 'de la' : 'del');
+  const al = (P) => (P.fem ? 'a la' : 'al');
+  const el = (P) => (P.fem ? 'la' : 'el');
   const MODULOS = ['compuesto', 'conversion', 'indexadas', 'vencida', 'anticipada', 'perpetua'];
   const NOMBRE_MOD = {
     compuesto: 'Interés compuesto', conversion: 'Conversión de tasas', indexadas: 'Tasas indexadas',
@@ -351,7 +355,7 @@
       const fin = conocido ? N : 'n';
       const ult = ran.find((r) => r.p === fin);
       if (ult) ult.etq = conocido ? `${F.cant(nDato)} ${U.unidades}` : (inc === 'n' ? 'n = ?' : 'n');
-      const spec = { ranuras: ran, pie: `Tiempo en ${U.unidades}. VP es lo que se invierte hoy y VF lo que se tiene al final del ${U.sust} ${conocido ? F.cant(nDato) : 'n'}.` };
+      const spec = { ranuras: ran, pie: `Tiempo en ${U.unidades}. VP es lo que se invierte hoy y VF lo que se tiene al final ${del(U)} ${U.sust} ${conocido ? F.cant(nDato) : 'n'}.` };
       spec.unicoAbajo = { p: 0, txt: textoValor('VP', leerMonto('compuesto-VP'), inc === 'VP', res, fmtCorto), inc: inc === 'VP' };
       spec.arriba = [{ p: fin, txt: textoValor('VF', leerMonto('compuesto-VF'), inc === 'VF', res, fmtCorto), inc: inc === 'VF' }];
       if (inc === 'i') spec.centro = { txt: res ? `i = ${F.pct(res.valor)} ${U.nombre}` : 'i = ?', inc: true };
@@ -386,7 +390,7 @@
       if (inc === 'i') spec.centro = { txt: res ? `i = ${F.pct(res.valor)} ${P.nombre}` : 'i = ?', inc: true };
       if (inc === 'n' && res) spec.centro = { txt: `n teórico = ${F.num(res.valor, 4)}`, inc: true };
       const desde = ant ? 0 : 1, hasta = conocido ? (ant ? N - 1 : N) : 'n';
-      spec.pie = `Periodos en ${P.unidades}. Pagos ${ant ? 'anticipados' : 'vencidos'} del ${P.sust} ${desde} al ${P.sust} ${conocido ? hasta : (ant ? 'n − 1' : 'n')}${aj && !aj.sinPagoFinal ? `; el último (X) es menor que la cuota` : ''}. ${base === 'VF' ? `VF está al final del ${P.sust} ${conocido ? N : 'n'}.` : `VP está en el ${P.sust} 0.`}`;
+      spec.pie = `Periodos en ${P.unidades}. Pagos ${ant ? 'anticipados' : 'vencidos'} ${del(P)} ${P.sust} ${desde} ${al(P)} ${P.sust} ${conocido ? hasta : (ant ? 'n − 1' : 'n')}${aj && !aj.sinPagoFinal ? `; el último (X) es menor que la cuota` : ''}. ${base === 'VF' ? `VF está al final ${del(P)} ${P.sust} ${conocido ? N : 'n'}.` : `VP está en ${el(P)} ${P.sust} 0.`}`;
       return spec;
     }
     if (m === 'perpetua') {
