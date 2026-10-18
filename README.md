@@ -18,6 +18,7 @@ La calculadora está publicada en **https://calculadora-ingenieria-economica.ver
 - `js/interfaz.js` lee los datos de los formularios, revisa que sean consistentes, dibuja la línea de tiempo y muestra los resultados.
 - `pruebas/validaciones.js` corre los cinco ejercicios de validación del documento y compara el resultado con el valor esperado.
 - `icono.svg`, `apple-touch-icon.png` y `vista-previa.png` son el ícono de la página y la imagen que aparece cuando se comparte el enlace.
+- `documento/Proyecto_Calculadora_Financiera.pdf` es el documento del proyecto, con el documento técnico, el manual de uso, los cinco ejercicios de validación y la matriz.
 
 Para correr la prueba se usa Node.js:
 
